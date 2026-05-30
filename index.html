@@ -53,10 +53,7 @@
 
     <div id="normal" class="tab-content" style="display: block;">
         <div class="gallery-grid">
-            <img src="img/normal.jpg.png"> 
             <img src="img/normal1.jpg.png"> 
-            <img src="img/normal4.jpg.jpeg"> 
-            <img src="img/normal5.jpg.png">
             <img src="img/kak_gio.jpeg">
             <img src="img/capek.jpg.png">
             <img src="img/GIO_EYE_O_MOUTH_C.png">
@@ -79,8 +76,6 @@
             <img src="img/gio16.png">
             <img src="img/gio17.jpg">
             <img src="img/gio19.jpeg">
-            <img src="img/anteng.png">
-            <img src="img/anteng2.png">
         </div>
     </div>
 
@@ -111,7 +106,7 @@
             <img src="img/gio20 - Salin.png">
             <img src="img/setan.png">
             <img src="img/GIO.POU.png">
-            <img src="img/img/waw.png">
+            <img src="img/waw.png">
             <img src="img/owl.png">
             <img src="img/bakpao.png">
             <img src="img/babi agry.png">
@@ -121,33 +116,40 @@
     </div>
 </section>
 
-<div class="playlist-section" 
-style="text-align: center; 
-margin: 40px auto; 
-background: #1a1a1a; 
-padding: 25px; 
-border-radius: 15px; 
-width: 90%;">
-    <p style="color: #bb86fc; 
-    font-size: 14px; 
-    margin-bottom: 20px;">🎵 GIO GEVAGAR PLAYLIST</p>
+<div class="playlist-section">
+    <p class="playlist-title">🎵 GIO GEVAGAR PLAYLIST</p>
     
-    <button onclick="playSong('re7kJ7HC9Oc', 'Everything Goes On')" 
-    style="background: #5d4037; 
-    color: white; border: none; 
-    padding: 12px 25px; 
-    border-radius: 10px; cursor: pointer; 
-    width: 220px; 
-    font-weight: bold;">
-        Everything Goes On 🎶
-    </button>
-
-    <div style="margin-top: 15px;">
-        <button onclick="stopMusic()" style="background: #cc0000; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 12px; opacity: 0.9;">
-            Stop Music ⏸️
-        </button>
+    <div class="spotify-card">
+        <div class="player-cover">
+            <img src="img/gio1.png" alt="Cover Album" id="current-cover">
+        </div>
+        
+        <div class="player-details">
+            <div class="track-info">
+                <h3 id="track-title">Everything Goes On</h3>
+                <p id="track-artist">Gio Gevagar</p>
+            </div>
+            
+            <div class="progress-container">
+                <span class="time-text" id="current-time">0:00</span>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+                <span class="time-text">3:32</span>
+            </div>
+            
+            <div class="player-controls">
+                <button class="control-btn play-btn" onclick="playSong('re7kJ7HC9Oc', 'Everything Goes On')">
+                    <i class="fas fa-play"></i> Play
+                </button>
+                <button class="control-btn stop-btn" onclick="stopMusic()">
+                    <i class="fas fa-pause"></i> Stop
+                </button>
+            </div>
+        </div>
     </div>
-    <p id="status" style="color: #555; font-size: 12px; margin-top: 15px;">Status: Off</p>
+    
+    <p id="status">Status: Off</p>
     
     <div style="display:none;">
         <iframe id="youtube-player" width="1" height="1" src="" frameborder="0" allow="autoplay"></iframe>
@@ -224,19 +226,63 @@ function closeCreatorModal() {
     if(modalCreator) modalCreator.style.display = "none";
 }
 
+// PASANG KODE BARU INI:
+let progressInterval;
+
 function playSong(videoId, title) {
     if(player) {
+        // Memutar lagu lewat iframe youtube tersembunyi
         player.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
-        if(statusText) statusText.innerHTML = "Status: Memutar " + title;
-        if(statusText) statusText.style.color = "#bb86fc";
+        
+        if(statusText) {
+            statusText.innerHTML = "Status: Memutar " + title;
+            statusText.style.color = "#bb86fc";
+        }
+        
+        // Reset interval jika sebelumnya ada lagu yang sedang berjalan
+        clearInterval(progressInterval);
+        
+        const progressFill = document.getElementById('progress-fill');
+        const currentTimeText = document.getElementById('current-time');
+        let width = 0;
+        let seconds = 0;
+        
+        // Menjalankan simulasi progress bar & timer setiap 1 detik
+        progressInterval = setInterval(() => {
+            if (width >= 100) {
+                clearInterval(progressInterval);
+            } else {
+                // Angka 0.5 ini estimasi kecepatan bar berjalan, bisa disesuaikan
+                width += 0.5; 
+                seconds += 1;
+                
+                // Format hitungan detik menjadi Menit:Detik (0:00)
+                let mins = Math.floor(seconds / 60);
+                let secs = seconds % 60;
+                if (secs < 10) secs = '0' + secs;
+                
+                // Update tampilan visual progress bar Spotify
+                if(progressFill) progressFill.style.width = width + '%';
+                if(currentTimeText) currentTimeText.innerHTML = mins + ':' + secs;
+            }
+        }, 1000);
     }
 }
 
 function stopMusic() {
     if(player) {
         player.src = "";
-        if(statusText) statusText.innerHTML = "Status: Off";
-        if(statusText) statusText.style.color = "#555";
+        
+        if(statusText) {
+            statusText.innerHTML = "Status: Off";
+            statusText.style.color = "#a7a7a7";
+        }
+        
+        clearInterval(progressInterval);
+        const progressFill = document.getElementById('progress-fill');
+        const currentTimeText = document.getElementById('current-time');
+        if(progressFill) progressFill.style.width = '0%';
+        if(currentTimeText) currentTimeText.innerHTML = '0:00';
     }
 }
 
