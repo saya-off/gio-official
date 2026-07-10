@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gio Portal Final | Dinda Savila</title>
+    <title>Gio Portal | Dinda Savila</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -12,172 +12,216 @@
 <nav class="navbar-global">
     <div class="logo-wrapper" onclick="openLogoPreview()">
         <img src="LOGO_GIO.png" alt="Logo" class="nav-logo-img">
-        <p class="logo-text">
-            GIO.<span>GEVAGAR</span>
-        </p>
+        <p class="logo-text">GIO<span>.GEVAGAR</span></p>
     </div>
 
     <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
+        <li><a href="#top">Home</a></li>
         <li><a href="#main-content">Koleksi</a></li>
+        <li><a href="#" onclick="openGevagart(); return false;">Gevagart</a></li>
+        <li><a href="#" onclick="openMusicApp(); return false;">Musik</a></li>
+        <li><a href="#quicklinks-section">Sosmed</a></li>
     </ul>
 </nav>
 
+<div class="hero-wrap" id="top">
+    <div class="hero-particles" id="heroParticles"></div>
+    <div class="hero-card">
 
-<section id="welcome-screen" class="hero">
-    <div class="hero-content">
-        <h1 class="fade-in">Portal<br>Kenalan Gio</h1>
-        <p>Halo! Klik tombol di bawah untuk mulai eksplorasi koleksi konten Gio.</p>
-        
-        <div class="sosmed-container fade-in delay-2">
-            <a href="https://youtube.com/@giogevagar" target="_blank" class="sos-icon"><i class="fab fa-youtube"></i></a>
-            <a href="https://www.instagram.com/giogvagar" target="_blank" class="sos-icon"><i class="fab fa-instagram"></i></a>
-            <a href="https://x.com/gio_gevagar12" target="_blank" class="sos-icon"><i class="fab fa-x-twitter"></i></a>
-            <a href="https://www.tiktok.com/@giogevagar" target="_blank" class="sos-icon"><i class="fab fa-tiktok"></i></a>
-            <a href="https://discord.gg/cUwbxE87Qb" class="sos-icon"><i class="fab fa-discord"></i></a>
-            <a href="https://trakteer.id/gio_gevagar" class="sos-icon"><i class="fas fa-coffee"></i></a>
+        <div class="hero-sidebar">
+            <div class="sidebar-logo" onclick="openLogoPreview()" title="GIO.GEVAGAR">
+                <img src="LOGO_GIO.png" alt="Logo">
+                <span class="hero-status-dot"></span>
+            </div>
+            <div class="sidebar-icons">
+                <a href="#main-content" class="sos-icon" title="Koleksi"><i class="fas fa-images"></i></a>
+                <a href="#" onclick="openGevagart(); return false;" class="sos-icon" title="Gevagart"><i class="fas fa-layer-group"></i></a>
+                <a href="#" onclick="openMusicApp(); return false;" class="sos-icon" title="Musik"><i class="fas fa-music"></i></a>
+                <a href="#" onclick="openGioBio(); return false;" class="sos-icon" title="Tentang Gio"><i class="fas fa-scroll"></i></a>
+                <a href="#" onclick="openCreatorModal(); return false;" class="sos-icon" title="Tentang Kreator"><i class="fas fa-user"></i></a>
+                <a href="#quicklinks-section" class="sos-icon" title="Sosial Media"><i class="fas fa-share-nodes"></i></a>
+            </div>
         </div>
 
-        <button class="main-btn" onclick="mulaiKenalan()">Ayo Kenalan!</button>
-    </div>
-</section>
+        <div class="hero-main">
+            <div class="hero-copy">
+                <p class="hero-eyebrow">VTUBER INDONESIA</p>
+                <h1>Gio<br>Gevagar</h1>
+                <p class="hero-sub">
+                    Selamat datang di portal kenalan Gio Gevagar! 
+                    Di sini kamu bisa menemukan koleksi galeri, musik, dan informasi tentang kreator. 
+                    Jangan ragu untuk berinteraksi dan mengikuti semua sosial media Gio!
+                </p>
+                <button class="main-btn" onclick="mulaiKenalan()">Kenalan Sekarang</button>
 
-<section id="main-content">
-    <div class="section-header">
-        <h2>Koleksi Galeri</h2>
+                <p class="hero-platform-label">Aktif &amp; siap disapa di</p>
+                <div class="hero-platforms" id="quicklinks-section">
+                    <a href="https://discord.gg/cUwbxE87Qb" target="_blank" class="platform-badge"><i class="fab fa-discord"></i> Discord</a>
+                    <a href="https://youtube.com/@giogevagar" target="_blank" class="platform-badge"><i class="fab fa-youtube"></i> YouTube</a>
+                    <a href="https://www.tiktok.com/@giogevagar" target="_blank" class="platform-badge"><i class="fab fa-tiktok"></i> TikTok</a>
+                    <a href="https://www.instagram.com/giogvagar" target="_blank" class="platform-badge"><i class="fab fa-instagram"></i> Instagram</a>
+                    <a href="https://x.com/gio_gevagar12" target="_blank" class="platform-badge"><i class="fab fa-x-twitter"></i> X</a>
+                    <a href="https://trakteer.id/gio_gevagar" target="_blank" class="platform-badge platform-badge-trakteer"><i class="fas fa-mug-hot"></i> Traktir</a>
+                </div>
+            </div>
+
+            <div class="hero-scroll-cue" onclick="mulaiKenalan()" title="Lihat koleksi">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+
+            <div class="hero-speech-bubble">
+                <p>Halo, aku Gio!</p>
+                <span class="hero-speech-tail"></span>
+            </div>
+
+            <div class="hero-float-badge badge-1"><i class="fas fa-music"></i></div>
+            <div class="hero-float-badge badge-2"><i class="fas fa-star"></i></div>
+            <div class="hero-float-badge badge-3"><i class="fas fa-heart"></i></div>
+            <div class="hero-float-badge badge-4"><i class="fas fa-wand-magic-sparkles"></i></div>
+        </div>
+    </div>
+</div>
+
+
+<section id="main-content" class="gallery-section">
+    <div class="gallery-header">
+        <h2 class="gallery-title">Koleksi Galeri</h2>
         <div class="tab-buttons">
             <button class="tab-btn active" id="btn-normal" onclick="bukaTab('normal')">Gio Normal</button>
             <button class="tab-btn" id="btn-anomali" onclick="bukaTab('anomali')">Gio Anomali</button>
         </div>
     </div>
 
-    <div id="normal" class="tab-content" style="display: block;">
+    <div id="normal" class="tab-content" style="display:block;">
         <div class="gallery-grid">
-            <img src="img/normal1.jpg.png"> 
-            <img src="img/kak_gio.jpeg">
-            <img src="img/capek.jpg.png">
-            <img src="img/GIO_EYE_O_MOUTH_C.png">
-            <img src="img/chibi.jpeg">
-            <img src="img/geoooo.png">
-            <img src="img/gio1.png">
-            <img src="img/gio2.png">
-            <img src="img/gio3.jpg">
-            <img src="img/gio4.jpg">
-            <img src="img/gio5.png">
-            <img src="img/gio7.png">
-            <img src="img/gio8.jpg">
-            <img src="img/gio9.png">
-            <img src="img/gio10.png">
-            <img src="img/gio11.png">
-            <img src="img/gio12.jpg">
-            <img src="img/gio13.png">
-            <img src="img/gio14.jpg">
-            <img src="img/gio15.png">
-            <img src="img/gio16.png">
-            <img src="img/gio17.jpg">
-            <img src="img/gio19.jpeg">
+            <img src="img/normal1.jpg.png" alt="Gio Normal">
+            <img src="img/kak_gio.jpeg" alt="Gio">
+            <img src="img/capek.jpg.png" alt="Gio">
+            <img src="img/GIO_EYE_O_MOUTH_C.png" alt="Gio">
+            <img src="img/chibi.jpeg" alt="Chibi">
+            <img src="img/geoooo.png" alt="Gio">
+            <img src="img/gio1.png" alt="Gio">
+            <img src="img/gio2.png" alt="Gio">
+            <img src="img/gio3.jpg" alt="Gio">
+            <img src="img/gio4.jpg" alt="Gio">
+            <img src="img/gio5.png" alt="Gio">
+            <img src="img/gio7.png" alt="Gio">
+            <img src="img/gio8.jpg" alt="Gio">
+            <img src="img/gio9.png" alt="Gio">
+            <img src="img/gio10.png" alt="Gio">
+            <img src="img/gio11.png" alt="Gio">
+            <img src="img/gio12.jpg" alt="Gio">
+            <img src="img/gio13.png" alt="Gio">
+            <img src="img/gio14.jpg" alt="Gio">
+            <img src="img/gio15.png" alt="Gio">
+            <img src="img/gio16.png" alt="Gio">
+            <img src="img/gio17.jpg" alt="Gio">
+            <img src="img/gio19.jpeg" alt="Gio">
         </div>
     </div>
 
-    <div id="anomali" class="tab-content" style="display: none;">
+    <div id="anomali" class="tab-content" style="display:none;">
         <div class="gallery-grid">
-            <img src="img/anomali_1.jpg.png"> 
-            <img src="img/Anomali_angrybird.jpg.jpeg">
-            <img src="img/Anomali_babi.jpg.jpeg"> 
-            <img src="img/Anomali_botak.jpg.png">
-            <img src="img/Anomali_gitar.jpg.jpeg"> 
-            <img src="img/Anomali_kipas.jpg.jpeg">
-            <img src="img/Anomali_kopi.jpg.jpeg">
-            <img src="img/Anomali_Kura2.jpg.jpeg">
-            <img src="img/Anomali_Kutukan.jpg.jpeg">
-            <img src="img/Anomali_laba2.jpg.jpeg">
-            <img src="img/Anomali_silver.jpg.jpeg">
-            <img src="img/Anomali_Setan.jpg.jpeg">
-            <img src="img/Anomali_skibidi.jpg.jpeg">
-            <img src="img/Anomali_Pari - Salin.jpeg">
-            <img src="img/Anomali.png">
-            <img src="img/astaga.jpeg">
-            <img src="img/roblox.jpeg">
-            <img src="img/squ.jpeg">
-            <img src="img/tanaman.jpeg">
-            <img src="img/upin.jpeg">
-            <img src="img/valen.jpeg">
-            <img src="img/anomaliTIKUS.png">
-            <img src="img/gio20 - Salin.png">
-            <img src="img/setan.png">
-            <img src="img/GIO.POU.png">
-            <img src="img/waw.png">
-            <img src="img/owl.png">
-            <img src="img/bakpao.png">
-            <img src="img/babi agry.png">
-            <img src="img/gta.png">
-            <img src="img/kambing mbek.png">
+            <img src="img/anomali_1.jpg.png" alt="Anomali">
+            <img src="img/Anomali_angrybird.jpg.jpeg" alt="Anomali">
+            <img src="img/Anomali_babi.jpg.jpeg" alt="Anomali">
+            <img src="img/Anomali_botak.jpg.png" alt="Anomali">
+            <img src="img/Anomali_gitar.jpg.jpeg" alt="Anomali">
+            <img src="img/Anomali_kipas.jpg.jpeg" alt="Anomali">
+            <img src="img/Anomali_kopi.jpg.jpeg" alt="Anomali">
+            <img src="img/Anomali_Kura2.jpg.jpeg" alt="Anomali">
+            <img src="img/Anomali_Kutukan.jpg.jpeg" alt="Anomali">
+            <img src="img/Anomali_laba2.jpg.jpeg" alt="Anomali">
+            <img src="img/Anomali_silver.jpg.jpeg" alt="Anomali">
+            <img src="img/Anomali_Setan.jpg.jpeg" alt="Anomali">
+            <img src="img/Anomali_skibidi.jpg.jpeg" alt="Anomali">
+            <img src="img/Anomali_Pari - Salin.jpeg" alt="Anomali">
+            <img src="img/Anomali.png" alt="Anomali">
+            <img src="img/astaga.jpeg" alt="Anomali">
+            <img src="img/roblox.jpeg" alt="Anomali">
+            <img src="img/squ.jpeg" alt="Anomali">
+            <img src="img/tanaman.jpeg" alt="Anomali">
+            <img src="img/upin.jpeg" alt="Anomali">
+            <img src="img/valen.jpeg" alt="Anomali">
+            <img src="img/anomaliTIKUS.png" alt="Anomali">
+            <img src="img/gio20 - Salin.png" alt="Anomali">
+            <img src="img/setan.png" alt="Anomali">
+            <img src="img/GIO.POU.png" alt="Anomali">
+            <img src="img/waw.png" alt="Anomali">
+            <img src="img/owl.png" alt="Anomali">
+            <img src="img/bakpao.png" alt="Anomali">
+            <img src="img/babi agry.png" alt="Anomali">
+            <img src="img/gta.png" alt="Anomali">
+            <img src="img/kambing mbek.png" alt="Anomali">
         </div>
     </div>
 </section>
 
-<div class="playlist-section">
-    <p class="playlist-title">🎵 GIO GEVAGAR PLAYLIST</p>
-    
-    <div class="spotify-card">
-        <div class="player-cover">
-            <img src="img/gio1.png" alt="Cover Album" id="current-cover">
-        </div>
-        
-        <div class="player-details">
-            <div class="track-info">
-                <h3 id="track-title">Everything Goes On</h3>
-                <p id="track-artist">Gio Gevagar</p>
-            </div>
-            
-            <div class="progress-container">
-                <span class="time-text" id="current-time">0:00</span>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="progress-fill"></div>
-                </div>
-                <span class="time-text">3:32</span>
-            </div>
-            
-            <div class="player-controls">
-                <button class="control-btn play-btn" onclick="playSong('re7kJ7HC9Oc', 'Everything Goes On')">
-                    <i class="fas fa-play"></i> Play
-                </button>
-                <button class="control-btn stop-btn" onclick="stopMusic()">
-                    <i class="fas fa-pause"></i> Stop
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <p id="status">Status: Off</p>
-    
-    <div style="display:none;">
-        <iframe id="youtube-player" width="1" height="1" src="" frameborder="0" allow="autoplay"></iframe>
-    </div>
+<div class="marquee-bar">
+    <marquee>Selamat datang di Portal Kenalan Gio! &nbsp;|&nbsp; Update: Galeri Gio Normal & Anomali tersedia! &nbsp;|&nbsp; Klik icon orang di sidebar untuk info kreator! &nbsp;|&nbsp; Follow semua sosmed Gio Gevagar!</marquee>
 </div>
 
-<div style="background: rgba(187, 134, 252, 0.1); padding: 10px 0; border-top: 1px solid #bb86fc; border-bottom: 1px solid #bb86fc;">
-    <marquee style="color: #bb86fc; font-weight: bold;">
-        ✨ Selamat datang di Portal Kenalan Gio! ✨ Update: Struktur Kode sudah dibersihkan! ✨ Klik icon sidik jari di bawah! ✨
-    </marquee>
-</div>
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="footer-content">
+        <div class="footer-brand">
+            <img src="LOGO_GIO.png" alt="Logo" class="footer-logo">
+            <p class="footer-brand-text">GIO<span>.GEVAGAR</span></p>
+        </div>
 
-<footer>
-    <p>© 2026 GIO.GEVAGAR | 
-        <span id="secret-btn" onclick="openCreatorModal()" style="cursor:pointer; color:#bb86fc;">
-            <i class="fas fa-fingerprint"></i>
-        </span>
-    </p>
+        <nav class="footer-links">
+            <a href="#top">Home</a>
+            <a href="#main-content">Koleksi</a>
+            <a href="#" onclick="openGevagart(); return false;">Gevagart</a>
+            <a href="#" onclick="openMusicApp(); return false;">Musik</a>
+        </nav>
+
+        <div class="footer-socials">
+            <a href="https://discord.gg/cUwbxE87Qb" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+            <a href="https://youtube.com/@giogevagar" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.tiktok.com/@giogevagar" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+            <a href="https://www.instagram.com/giogvagar" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://x.com/gio_gevagar12" target="_blank" title="X"><i class="fab fa-x-twitter"></i></a>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2026 GIO.GEVAGAR &mdash; Semua hak cipta karya di sini milik pemiliknya masing-masing.</p>
+    </div>
 </footer>
 
 <div id="creatorModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="closeCreatorModal()" style="position: absolute; right: 20px; top: 10px; cursor: pointer; color: #bb86fc; font-size: 28px;">&times;</span>
-        
-        <img src="img/adinda.jpg" class="profile-img" alt="Foto Adinda Savila" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #bb86fc; margin-bottom: 15px; margin-top: 20px;">
-        
-        <h3 style="color: #bb86fc; margin-top: 10px; margin-bottom: 5px;">Adinda Savila</h3>
-        <p style="font-size: 14px; color: #ccc; margin-bottom: 20px;">Program Studi: Sistem dan Teknologi Informasi</p>
+    <div class="modal-content modal-content-wide">
+        <span class="close-modal" onclick="closeCreatorModal()"><i class="fas fa-xmark"></i></span>
+
+        <div class="creator-carousel">
+            <span class="creator-carousel-nav prev" onclick="creatorPrev()"><i class="fas fa-chevron-left"></i></span>
+            <img src="img/savil.webp" class="creator-slide active" alt="Foto Dinda">
+            <img src="img/din.jpg" class="creator-slide" alt="Foto Dinda">
+            <img src="img/adhi.webp" class="creator-slide" alt="Foto Dinda">
+            <span class="creator-carousel-nav next" onclick="creatorNext()"><i class="fas fa-chevron-right"></i></span>
+            <div class="creator-carousel-dots">
+                <span class="dot active" onclick="creatorSlide(0)"></span>
+                <span class="dot" onclick="creatorSlide(1)"></span>
+                <span class="dot" onclick="creatorSlide(2)"></span>
+            </div>
+        </div>
+
+        <h3>Dinda</h3>
+        <span class="creator-role">Kreator &amp; Developer Website Ini</span>
+
+        <div class="gio-fact-list">
+            <div class="gio-fact"><span>Tanggal Lahir</span><strong>14 Agustus</strong></div>
+            <div class="gio-fact"><span>Tinggi</span><strong>155 cm</strong></div>
+            <div class="gio-fact"><span>Jurusan</span><strong>Sistem &amp; Teknologi Informasi</strong></div>
+            <div class="gio-fact"><span>Fakultas</span><strong>Teknik</strong></div>
+        </div>
+
+        <blockquote class="creator-quote">
+            <i class="fas fa-quote-left"></i>
+            Tetap mengerjakan apapun walaupun sa malas lakukan, instan tetap instan dan manual yah manual.
+        </blockquote>
+
         <a href="https://www.instagram.com/wa_ode_adinda_savila" target="_blank" class="ig-btn">
             <i class="fab fa-instagram"></i> Baku pukul sini
         </a>
@@ -186,152 +230,173 @@
 
 <div id="logoModal" class="modal">
     <div class="modal-content">
-        <span class="close-modal" onclick="closeLogoPreview()">&times;</span>
-        <img src="LOGO_GIO.png" alt="Logo" style="width: 200px; margin-top:20px;">
-        <h3 style="color:#bb86fc;">GIO GEVAGAR</h3>
-        <p style="color:#ccc;">"wanna hear something amazing? Liat-liat sampai selesai ya?"✨</p>
+        <span class="close-modal" onclick="closeLogoPreview()"><i class="fas fa-xmark"></i></span>
+        <img src="LOGO_GIO.png" alt="Logo" style="width:160px; margin-top:20px;">
+        <h3>GIO GEVAGAR</h3>
+        <p>"wanna hear something amazing? Liat-liat sampai selesai ya?"</p>
     </div>
 </div>
 
-<audio id="voiceWelcome" src="giogev.mp4"></audio>
+<div id="gioBioModal" class="modal">
+    <div class="modal-content modal-content-wide">
+        <span class="close-modal" onclick="closeGioBio()"><i class="fas fa-xmark"></i></span>
+        <img src="img/gio1.png" class="profile-img" alt="Gio Gevagar">
+        <h3>Gio Gevagar</h3>
+        <p class="gio-bio-tagline">VTuber Indonesia yang tumbuh besar dari layar kecil, siaran demi siaran</p>
 
-<script>
-const modalCreator = document.getElementById("creatorModal");
-const player = document.getElementById('youtube-player');
-const statusText = document.getElementById('status');
+        <div class="gio-fact-list">
+            <div class="gio-fact"><span>Debut</span><strong>10 Agustus 2024</strong></div>
+            <div class="gio-fact"><span>Ulang Tahun</span><strong>8 Januari</strong></div>
+            <div class="gio-fact"><span>Tinggi</span><strong>183 cm</strong></div>
+            <div class="gio-fact"><span>Bahasa</span><strong>Indonesia & Inggris</strong></div>
+            <div class="gio-fact"><span>Fanbase</span><strong>Gevagroove</strong></div>
+        </div>
 
-function openLogoPreview() {
-    const modal = document.getElementById("logoModal");
-    const audio = document.getElementById("voiceWelcome");
-    if (modal) { modal.style.display = "flex"; }
-    if (audio) {
-        audio.currentTime = 0;
-        audio.volume = 0.6;
-        audio.play().catch(() => {});
-    }
-}
+        <p>
+            Capricorn kelahiran 8 Januari ini tampil natural dalam bahasa Indonesia maupun Inggris di setiap siaran,
+            ditemani fanbase Gevagroove. Berbagai momennya juga punya sebutan sendiri: GioOnStage untuk siaran
+            langsung, Clipagar untuk potongan klip, Intonasing saat bernyanyi, dan Gevagart untuk karya para penggemar.
+        </p>
+    </div>
+</div>
 
-function closeLogoPreview() { 
-    const modal = document.getElementById("logoModal");
-    const audio = document.getElementById("voiceWelcome");
-    if (modal) { modal.style.display = "none"; }
-    if (audio) { audio.pause(); audio.currentTime = 0; }
-}
+<div id="gevagartApp" class="app-overlay">
+    <div class="app-header">
+        <button class="app-back" onclick="closeGevagart()"><i class="fas fa-arrow-left"></i> Kembali</button>
+        <h2 class="app-title"><i class="fas fa-palette"></i> Gevagart</h2>
+        <span class="app-header-spacer"></span>
+    </div>
 
-function openCreatorModal() {
-    if(modalCreator) modalCreator.style.display = "flex";
-}
+    <div class="app-body">
+        <p class="app-subtitle">Koleksi karya seni & fanart Gio Gevagar</p>
 
-function closeCreatorModal() { 
-    if(modalCreator) modalCreator.style.display = "none";
-}
+        <div class="gevagart-grid" id="gevagartGrid">
+            <div class="gevagart-item"><img src="img gam/1.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/2.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/3.jpg" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/4.jpg" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/5.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/6.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/7.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/8.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/9.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/10.jpg" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/11.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/12.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/13.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/14.jpg" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/15.jpg" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/16.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/17.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/18.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/19.jpg" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/20.jpg" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/21.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/22.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/23.png" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/24.jpg" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/25.jpg" alt="Gevagart"></div>
+            <div class="gevagart-item"><img src="img gam/26.jpg" alt="Gevagart"></div>
+        </div>
+    </div>
+</div>
 
-// PASANG KODE BARU INI:
-let progressInterval;
+<div id="musicApp" class="app-overlay">
+    <div class="app-header">
+        <button class="app-back" onclick="closeMusicApp()"><i class="fas fa-arrow-left"></i> Kembali</button>
+        <h2 class="app-title"><i class="fas fa-music"></i> Musik</h2>
+        <span class="app-header-spacer"></span>
+    </div>
 
-function playSong(videoId, title) {
-    if(player) {
-        // Memutar lagu lewat iframe youtube tersembunyi
-        player.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
-        
-        if(statusText) {
-            statusText.innerHTML = "Status: Memutar " + title;
-            statusText.style.color = "#bb86fc";
-        }
-        
-        // Reset interval jika sebelumnya ada lagu yang sedang berjalan
-        clearInterval(progressInterval);
-        
-        const progressFill = document.getElementById('progress-fill');
-        const currentTimeText = document.getElementById('current-time');
-        let width = 0;
-        let seconds = 0;
-        
-        // Menjalankan simulasi progress bar & timer setiap 1 detik
-        progressInterval = setInterval(() => {
-            if (width >= 100) {
-                clearInterval(progressInterval);
-            } else {
-                // Angka 0.5 ini estimasi kecepatan bar berjalan, bisa disesuaikan
-                width += 0.5; 
-                seconds += 1;
-                
-                // Format hitungan detik menjadi Menit:Detik (0:00)
-                let mins = Math.floor(seconds / 60);
-                let secs = seconds % 60;
-                if (secs < 10) secs = '0' + secs;
-                
-                // Update tampilan visual progress bar Spotify
-                if(progressFill) progressFill.style.width = width + '%';
-                if(currentTimeText) currentTimeText.innerHTML = mins + ':' + secs;
-            }
-        }, 1000);
-    }
-}
+    <div class="app-body">
+        <p class="app-subtitle">Playlist lagu pilihan Gio Gevagar</p>
 
-function stopMusic() {
-    if(player) {
-        player.src = "";
-        
-        if(statusText) {
-            statusText.innerHTML = "Status: Off";
-            statusText.style.color = "#a7a7a7";
-        }
-        
-        clearInterval(progressInterval);
-        const progressFill = document.getElementById('progress-fill');
-        const currentTimeText = document.getElementById('current-time');
-        if(progressFill) progressFill.style.width = '0%';
-        if(currentTimeText) currentTimeText.innerHTML = '0:00';
-    }
-}
+        <div class="spotify-card">
+            <div class="player-cover">
+                <img src="img/gio1.png" alt="Cover" id="current-cover" onerror="this.style.display='none'">
+                <div class="player-cover-fallback"><i class="fas fa-music"></i></div>
+            </div>
 
-function bukaTab(nama) {
-    const tabs = document.querySelectorAll('.tab-content');
-    tabs.forEach(tab => {
-        tab.style.display = 'none';
-        tab.classList.remove('active');
-    });
+            <div class="player-details">
+                <div class="track-info">
+                    <h3 id="track-title">Everything Goes On</h3>
+                    <p id="track-artist">Gio Gevagar</p>
+                </div>
 
-    const buttons = document.querySelectorAll('.tab-btn');
-    buttons.forEach(btn => { btn.classList.remove('active'); });
+                <div class="progress-container">
+                    <span class="time-text" id="current-time">0:00</span>
+                    <div class="progress-bar-bg" id="progress-bar-bg" onclick="seekTo(event)">
+                        <div class="progress-bar-fill" id="progress-fill"></div>
+                    </div>
+                    <span class="time-text" id="total-time">0:00</span>
+                </div>
 
-    const targetTab = document.getElementById(nama);
-    if (targetTab) {
-        targetTab.style.display = 'block';
-        targetTab.classList.add('active');
-    }
+                <div class="player-controls">
+                    <button class="control-btn playpause-btn" id="playPauseBtn" onclick="togglePlayPause()">
+                        <i class="fas fa-play"></i> Putar
+                    </button>
+                </div>
+            </div>
+        </div>
 
-    const targetBtn = document.getElementById('btn-' + nama);
-    if (targetBtn) { targetBtn.classList.add('active'); }
-}
+        <p id="status">Status: Off</p>
+        <div class="music-list" id="musicList">
 
-function mulaiKenalan() { 
-    const mainContent = document.getElementById('main-content');
-    if(mainContent) mainContent.scrollIntoView({ behavior: 'smooth' }); 
-}
+            <div class="music-item active" onclick="playSong('re7kJ7HC9Oc','Everything Goes On','Gio Gevagar', this)">
+                <img src="img/gio1.png" alt="Cover" onerror="this.style.display='none'">
+                <div class="music-item-info">
+                    <p class="music-item-title">Everything Goes On</p>
+                    <p class="music-item-artist">Gio Gevagar</p>
+                </div>
+                <span class="music-item-icon-slot"><i class="fas fa-play music-item-icon"></i></span>
+            </div>
 
-function kembaliHome() { 
-    window.scrollTo({ top: 0, behavior: 'smooth' }); 
-}
+            <div class="music-item" onclick="playSong('aGEYSZrbeAo','NPD - Sempurnanya Aku','Gio Gevagar', this)">
+                <img src="img/npd.png" alt="Cover" onerror="this.style.display='none'">
+                <div class="music-item-info">
+                    <p class="music-item-title">NPD - Sempurnanya Aku </p>
+                    <p class="music-item-artist">Gio Gevagar</p>
+                </div>
+                <span class="music-item-icon-slot"><i class="fas fa-play music-item-icon"></i></span>
+            </div>
 
-window.onclick = function(event) {
-    if (event.target == modalCreator) closeCreatorModal();
-    const modalLogo = document.getElementById("logoModal");
-    if (event.target == modalLogo) closeLogoPreview();
-}
 
-window.addEventListener('scroll', function() {
-    const nav = document.querySelector('nav');
-    if (window.scrollY > 10) {
-        nav.classList.add('scrolled');
-    } else {
-        nav.classList.remove('scrolled');
-    }
-});
-</script>
+        </div>
+    </div>
+
+    <div style="display:none;">
+        <div id="youtube-player"></div>
+    </div>
+</div>
+
+<div class="goblin-mascot" id="goblinMascot" title="Goblin">
+    <svg viewBox="0 0 150 90" width="90" height="54" xmlns="http://www.w3.org/2000/svg" class="goblin-svg">
+        <ellipse class="goblin-leg goblin-leg-bl" cx="35" cy="74" rx="11" ry="7" fill="#3f9d63"></ellipse>
+        <ellipse class="goblin-leg goblin-leg-br" cx="105" cy="74" rx="11" ry="7" fill="#3f9d63"></ellipse>
+        <ellipse class="goblin-leg goblin-leg-fl" cx="28" cy="60" rx="10" ry="6" fill="#5fc182"></ellipse>
+        <ellipse class="goblin-leg goblin-leg-fr" cx="112" cy="60" rx="10" ry="6" fill="#5fc182"></ellipse>
+        <path d="M18 58 Q6 58 12 68 Q18 72 24 66 Z" fill="#5fc182"></path>
+        <g class="goblin-shell-group">
+            <ellipse cx="72" cy="46" rx="48" ry="29" fill="#57c785"></ellipse>
+            <path d="M28 46 Q72 18 116 46 Q95 64 72 67 Q49 64 28 46 Z" fill="#2f9d5e" opacity="0.55"></path>
+            <path d="M50 36 L60 52 M72 30 L72 58 M94 36 L84 52" stroke="#1f6b41" stroke-width="3" stroke-linecap="round" fill="none"></path>
+            <ellipse cx="126" cy="42" rx="15" ry="13" fill="#5fc182"></ellipse>
+            <circle cx="134" cy="38" r="2.4" fill="#1a1a1a"></circle>
+        </g>
+    </svg>
+</div>
+
+<div id="miniPlayer" class="mini-player" onclick="openMusicApp()">
+    <img id="mini-cover" src="img/gio1.png" alt="Cover">
+    <div class="mini-info">
+        <p id="mini-title">-</p>
+        <p id="mini-artist">-</p>
+    </div>
+    <button class="mini-btn" id="miniPlayPauseBtn" onclick="event.stopPropagation(); togglePlayPause();">
+        <i class="fas fa-play"></i>
+    </button>
+</div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
