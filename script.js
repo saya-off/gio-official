@@ -2,7 +2,6 @@ const modalCreator = document.getElementById("creatorModal");
 const statusText = document.getElementById('status');
 let progressInterval;
 
-/* ===================== YOUTUBE PLAYER ENGINE ===================== */
 let ytPlayer = null;
 let ytReady = false;
 let pendingVideoId = null;
@@ -163,7 +162,6 @@ function togglePlayPause() {
         ytPlayer.playVideo();
     }
 }
-/* =================================================================== */
 
 function openLogoPreview() {
     const modal = document.getElementById("logoModal");
@@ -336,7 +334,6 @@ function closeMusicApp() {
         app.classList.remove('active');
         document.body.style.overflow = '';
     }
-    // Musik TIDAK dihentikan di sini -- biar tetap lanjut walau pindah halaman/app lain.
     if (currentTitle) showMiniPlayer();
 }
 
@@ -398,7 +395,6 @@ window.addEventListener('scroll', function() {
         nav.classList.remove('scrolled');
     }
 });
-/* ===================== HERO FLOATING PARTICLES ===================== */
 function initHeroParticles() {
     const container = document.getElementById('heroParticles');
     if (!container) return;
@@ -424,7 +420,6 @@ function initHeroParticles() {
     }
 }
 
-/* ===================== SCROLL REVEAL ===================== */
 function initScrollReveal() {
     if (!('IntersectionObserver' in window)) return;
 
@@ -450,17 +445,9 @@ function initScrollReveal() {
     prepAndObserve('.gio-fact');
     prepAndObserve('.platform-badge');
 
-    // Galeri "Koleksi" ada di dalam tab yang disembunyikan (display:none) saat awal load,
-    // jadi elemen di dalamnya baru diobservasi begitu tabnya benar-benar ditampilkan.
-    prepAndObserve('#normal .gallery-grid img');
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            setTimeout(() => prepAndObserve('.tab-content.active .gallery-grid img'), 30);
-        });
-    });
+    prepAndObserve('#anomali .gallery-grid img');
 }
 
-/* ===================== LOGO EASTER EGG ===================== */
 let logoClickTimes = [];
 function registerLogoClick(evt) {
     const now = Date.now();
@@ -488,41 +475,125 @@ function burstSparkles(x, y) {
     }
 }
 
+function initHeroBgSlideshow() {
+    const slides = document.querySelectorAll('#heroBgSlideshow .hero-bg-slide');
+    if (slides.length < 2) return;
+
+    let current = 0;
+    const intervalMs = 5000;
+
+    setInterval(() => {
+        const next = (current + 1) % slides.length;
+        slides[current].classList.remove('active');
+        slides[next].classList.add('active');
+        current = next;
+    }, intervalMs);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initHeroParticles();
     initScrollReveal();
-    scheduleGoblinWalk(8000 + Math.random() * 7000); // kemunculan pertama: 8-15 detik setelah load
+    initHeroBgSlideshow();
+    scheduleGoblinWalk(8000 + Math.random() * 7000);
 
     document.querySelectorAll('.logo-wrapper, .sidebar-logo').forEach(el => {
         el.addEventListener('click', registerLogoClick);
     });
 });
 
-/* ===================== GOBLIN THE TURTLE MASCOT ===================== */
-function walkGoblin() {
+
+let goblinAnimId = null;
+
+function patrolGoblin() {
     const mascot = document.getElementById('goblinMascot');
     if (!mascot) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (goblinAnimId) return; // sudah jalan, jangan tumpuk
 
-    const direction = Math.random() < 0.5 ? 'dir-right' : 'dir-left';
-    const duration = 14 + Math.random() * 6; // 14-20 detik jalan santai
-    mascot.style.setProperty('--goblin-duration', duration + 's');
+    const margin = 10;
+    const w = mascot.offsetWidth || 90;
+    const h = mascot.offsetHeight || 54;
 
-    mascot.classList.remove('walking', 'dir-right', 'dir-left');
-    void mascot.offsetWidth; // reset animasi
-    mascot.classList.add('walking', direction);
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
 
-    const cleanup = () => {
-        mascot.classList.remove('walking', direction);
-        mascot.removeEventListener('animationend', cleanup);
-    };
-    mascot.addEventListener('animationend', cleanup);
+    const leftX = margin;
+    const rightX = vw - margin - w;
+    const topY = margin;
+    const bottomY = vh - margin - h;
+
+    // Titik sudut + rotasi yang dipakai SAAT menuju titik itu (biar arah hadapnya pas)
+    // rot 0   = jalan ke kanan (hadap normal)
+    // rot -90 = manjat naik (sisi kanan)
+    // rot 180 = jalan ke kiri sambil "kebalik" (di langit-langit/atas)
+    // rot 90  = manjat turun (sisi kiri)
+    const clockwise = [
+        { x: leftX,  y: bottomY, rot: 0 },
+        { x: rightX, y: bottomY, rot: 0 },
+        { x: rightX, y: topY,    rot: -90 },
+        { x: leftX,  y: topY,    rot: 180 },
+        { x: leftX,  y: bottomY, rot: 90 }
+    ];
+    const counterClockwise = [
+        { x: rightX, y: bottomY, rot: 180 },
+        { x: leftX,  y: bottomY, rot: 180 },
+        { x: leftX,  y: topY,    rot: 90 },
+        { x: rightX, y: topY,    rot: 0 },
+        { x: rightX, y: bottomY, rot: -90 }
+    ];
+    const points = Math.random() < 0.5 ? clockwise : counterClockwise;
+
+    const speed = 110; // px per detik, biar durasi menyesuaikan ukuran layar
+    const segments = [];
+    for (let i = 0; i < points.length - 1; i++) {
+        const a = points[i], b = points[i + 1];
+        const dist = Math.hypot(b.x - a.x, b.y - a.y);
+        segments.push({ from: a, to: b, duration: Math.max(dist / speed, 0.4) });
+    }
+    const totalDuration = segments.reduce((sum, s) => sum + s.duration, 0);
+    const fadeTime = 0.6; // detik fade in/out di awal & akhir putaran
+
+    mascot.classList.add('patrolling');
+    mascot.style.opacity = '0';
+
+    const startTime = performance.now();
+
+    function frame(now) {
+        const elapsed = (now - startTime) / 1000;
+
+        if (elapsed >= totalDuration) {
+            mascot.classList.remove('patrolling');
+            mascot.style.opacity = '0';
+            goblinAnimId = null;
+            return;
+        }
+
+        let t = elapsed;
+        let seg = segments[0];
+        for (const s of segments) {
+            if (t <= s.duration) { seg = s; break; }
+            t -= s.duration;
+        }
+        const progress = Math.min(1, t / seg.duration);
+        const x = seg.from.x + (seg.to.x - seg.from.x) * progress;
+        const y = seg.from.y + (seg.to.y - seg.from.y) * progress;
+        const rot = seg.to.rot;
+
+        mascot.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+
+        const opacity = Math.min(1, elapsed / fadeTime, (totalDuration - elapsed) / fadeTime);
+        mascot.style.opacity = String(Math.max(0, opacity));
+
+        goblinAnimId = requestAnimationFrame(frame);
+    }
+
+    goblinAnimId = requestAnimationFrame(frame);
 }
 
 function scheduleGoblinWalk(firstDelay) {
     const delay = firstDelay !== undefined ? firstDelay : 25000 + Math.random() * 15000; // 25-40 detik
     setTimeout(() => {
-        walkGoblin();
+        patrolGoblin();
         scheduleGoblinWalk();
     }, delay);
 }
