@@ -495,6 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollReveal();
     initHeroBgSlideshow();
     scheduleGoblinWalk(8000 + Math.random() * 7000);
+    initGoblinInteraction();
 
     document.querySelectorAll('.logo-wrapper, .sidebar-logo').forEach(el => {
         el.addEventListener('click', registerLogoClick);
@@ -503,17 +504,90 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 let goblinAnimId = null;
+let goblinHeld = false;
+let goblinPressing = false;
+let goblinPressStart = { x: 0, y: 0 };
+let goblinDragOffset = { x: 0, y: 0 };
+let goblinLastPos = { x: 0, y: 0 };
 
-function patrolGoblin() {
+// Transform untuk si kura-kura tergantung sisi mana yang lagi dia lewatin +
+// arah geraknya, biar kaki selalu "nempel" ke arah tembok/lantai yang benar
+// dan kepala selalu menghadap arah jalannya (nggak kebalik/mundur).
+const GOBLIN_POSE = {
+    'bottom-right': 'rotate(0deg)',
+    'bottom-left':  'scaleX(-1)',
+    'top-right':    'scaleY(-1)',
+    'top-left':     'rotate(180deg)',
+    'right-up':     'rotate(-90deg)',
+    'right-down':   'rotate(90deg) scaleY(-1)',
+    'left-up':      'rotate(90deg) scaleX(-1)',
+    'left-down':    'rotate(90deg)'
+};
+
+// Urutan pojok + pose saat MENINGGALKAN tiap pojok, searah jarum jam / kebalikannya
+const GOBLIN_POSE_CW  = ['bottom-right', 'right-up', 'top-left', 'left-down'];
+const GOBLIN_POSE_CCW = ['left-up', 'bottom-left', 'right-down', 'top-right'];
+
+const GOBLIN_ANGRY_PHRASES = [
+    'Turunkan gue!',
+    'Woy, lepasin!!',
+    'APASIH SOK ASIK!',
+    'WOI GIO KURANG AJAR!!',
+    'Taruh balik!!',
+    'Hei!! Jangan diangkat!'
+];
+
+function goblinPickPhrase() {
+    const el = document.getElementById('goblinSpeech');
+    if (!el) return;
+    el.textContent = GOBLIN_ANGRY_PHRASES[Math.floor(Math.random() * GOBLIN_ANGRY_PHRASES.length)];
+}
+
+let goblinAudioCtx = null;
+function goblinGetAudioCtx() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!goblinAudioCtx) goblinAudioCtx = new AC();
+    if (goblinAudioCtx.state === 'suspended') goblinAudioCtx.resume();
+    return goblinAudioCtx;
+}
+
+function goblinBeep(ctx, freq, start, duration, type, peak) {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type || 'square';
+    osc.frequency.setValueAtTime(freq, start);
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(peak || 0.15, start + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start + duration + 0.03);
+}
+
+function goblinPlayAngrySound() {
+    const ctx = goblinGetAudioCtx();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    goblinBeep(ctx, 320, now, 0.09, 'square', 0.16);
+    goblinBeep(ctx, 230, now + 0.10, 0.09, 'square', 0.16);
+    goblinBeep(ctx, 170, now + 0.20, 0.15, 'sawtooth', 0.18);
+}
+
+function goblinPlayReliefSound() {
+    const ctx = goblinGetAudioCtx();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    goblinBeep(ctx, 420, now, 0.08, 'sine', 0.10);
+    goblinBeep(ctx, 540, now + 0.09, 0.10, 'sine', 0.10);
+}
+
+function goblinCorners() {
     const mascot = document.getElementById('goblinMascot');
-    if (!mascot) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if (goblinAnimId) return; // sudah jalan, jangan tumpuk
-
     const margin = 10;
     const w = mascot.offsetWidth || 90;
     const h = mascot.offsetHeight || 54;
-
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
@@ -522,72 +596,111 @@ function patrolGoblin() {
     const topY = margin;
     const bottomY = vh - margin - h;
 
-    // Titik sudut + rotasi yang dipakai SAAT menuju titik itu (biar arah hadapnya pas)
-    // rot 0   = jalan ke kanan (hadap normal)
-    // rot -90 = manjat naik (sisi kanan)
-    // rot 180 = jalan ke kiri sambil "kebalik" (di langit-langit/atas)
-    // rot 90  = manjat turun (sisi kiri)
-    const clockwise = [
-        { x: leftX,  y: bottomY, rot: 0 },
-        { x: rightX, y: bottomY, rot: 0 },
-        { x: rightX, y: topY,    rot: -90 },
-        { x: leftX,  y: topY,    rot: 180 },
-        { x: leftX,  y: bottomY, rot: 90 }
+    // Urutan tetap: 0=BL, 1=BR, 2=TR, 3=TL
+    return [
+        { x: leftX,  y: bottomY },
+        { x: rightX, y: bottomY },
+        { x: rightX, y: topY },
+        { x: leftX,  y: topY }
     ];
-    const counterClockwise = [
-        { x: rightX, y: bottomY, rot: 180 },
-        { x: leftX,  y: bottomY, rot: 180 },
-        { x: leftX,  y: topY,    rot: 90 },
-        { x: rightX, y: topY,    rot: 0 },
-        { x: rightX, y: bottomY, rot: -90 }
-    ];
-    const points = Math.random() < 0.5 ? clockwise : counterClockwise;
+}
 
-    const speed = 110; // px per detik, biar durasi menyesuaikan ukuran layar
+function goblinBuildRoute(corners, startIndex, clockwise) {
     const segments = [];
-    for (let i = 0; i < points.length - 1; i++) {
-        const a = points[i], b = points[i + 1];
-        const dist = Math.hypot(b.x - a.x, b.y - a.y);
-        segments.push({ from: a, to: b, duration: Math.max(dist / speed, 0.4) });
+    let idx = startIndex;
+    for (let i = 0; i < 4; i++) {
+        const nextIdx = clockwise ? (idx + 1) % 4 : (idx + 3) % 4;
+        const pose = clockwise ? GOBLIN_POSE_CW[idx] : GOBLIN_POSE_CCW[idx];
+        segments.push({ from: corners[idx], to: corners[nextIdx], pose });
+        idx = nextIdx;
     }
-    const totalDuration = segments.reduce((sum, s) => sum + s.duration, 0);
-    const fadeTime = 0.6; // detik fade in/out di awal & akhir putaran
+    return segments;
+}
+
+function goblinRunSegments(segments, opts) {
+    const mascot = document.getElementById('goblinMascot');
+    const rotor = document.getElementById('goblinRotor');
+    if (!mascot || !rotor) return;
+
+    const speed = 110; // px per detik
+    const timedSegments = segments.map(s => {
+        const dist = Math.hypot(s.to.x - s.from.x, s.to.y - s.from.y);
+        return { ...s, duration: Math.max(dist / speed, 0.4) };
+    });
+    const totalDuration = timedSegments.reduce((sum, s) => sum + s.duration, 0);
+    const fadeTime = 0.6;
+    const fadeIn = opts && opts.fadeIn;
+    const fadeOut = opts && opts.fadeOut;
+    const onDone = opts && opts.onDone;
 
     mascot.classList.add('patrolling');
-    mascot.style.opacity = '0';
+    if (fadeIn) mascot.style.opacity = '0';
+    rotor.style.transform = GOBLIN_POSE[timedSegments[0].pose];
 
+    let activePose = timedSegments[0].pose;
     const startTime = performance.now();
 
     function frame(now) {
+        if (goblinHeld) { goblinAnimId = null; return; }
+
         const elapsed = (now - startTime) / 1000;
 
         if (elapsed >= totalDuration) {
-            mascot.classList.remove('patrolling');
-            mascot.style.opacity = '0';
+            const last = timedSegments[timedSegments.length - 1].to;
+            goblinLastPos = { x: last.x, y: last.y };
+            mascot.style.transform = `translate(${last.x}px, ${last.y}px)`;
+            if (fadeOut) {
+                mascot.classList.remove('patrolling');
+                mascot.style.opacity = '0';
+            }
             goblinAnimId = null;
+            if (onDone) onDone();
             return;
         }
 
         let t = elapsed;
-        let seg = segments[0];
-        for (const s of segments) {
+        let seg = timedSegments[0];
+        for (const s of timedSegments) {
             if (t <= s.duration) { seg = s; break; }
             t -= s.duration;
         }
+
+        if (seg.pose !== activePose) {
+            activePose = seg.pose;
+            rotor.style.transform = GOBLIN_POSE[activePose];
+        }
+
         const progress = Math.min(1, t / seg.duration);
         const x = seg.from.x + (seg.to.x - seg.from.x) * progress;
         const y = seg.from.y + (seg.to.y - seg.from.y) * progress;
-        const rot = seg.to.rot;
+        goblinLastPos = { x, y };
 
-        mascot.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+        mascot.style.transform = `translate(${x}px, ${y}px)`;
 
-        const opacity = Math.min(1, elapsed / fadeTime, (totalDuration - elapsed) / fadeTime);
-        mascot.style.opacity = String(Math.max(0, opacity));
+        if (fadeIn || fadeOut) {
+            const opacity = Math.min(
+                fadeIn ? elapsed / fadeTime : 1,
+                fadeOut ? (totalDuration - elapsed) / fadeTime : 1
+            );
+            mascot.style.opacity = String(Math.max(0, Math.min(1, opacity)));
+        }
 
         goblinAnimId = requestAnimationFrame(frame);
     }
 
     goblinAnimId = requestAnimationFrame(frame);
+}
+
+function patrolGoblin() {
+    const mascot = document.getElementById('goblinMascot');
+    if (!mascot) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (goblinAnimId || goblinHeld) return; // sudah jalan atau lagi dipegang, jangan tumpuk
+
+    const corners = goblinCorners();
+    const clockwise = Math.random() < 0.5;
+    const segments = goblinBuildRoute(corners, 0, clockwise); // 0 = pojok kiri-bawah
+    goblinRunSegments(segments, { fadeIn: true, fadeOut: true });
 }
 
 function scheduleGoblinWalk(firstDelay) {
@@ -596,4 +709,114 @@ function scheduleGoblinWalk(firstDelay) {
         patrolGoblin();
         scheduleGoblinWalk();
     }, delay);
+}
+
+// --- Bisa disentuh & diseret; kalau diangkat dia marah; kalau dilepas, diam sebentar lalu jalan lagi ---
+function goblinGetPoint(e) {
+    if (e.touches && e.touches[0]) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    if (e.changedTouches && e.changedTouches[0]) return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+    return { x: e.clientX, y: e.clientY };
+}
+
+const GOBLIN_LIFT_THRESHOLD = 8; // px geseran minimum biar dianggap "diangkat", bukan cuma kesenggol/tersentuh
+
+function goblinPointerDown(e) {
+    const mascot = document.getElementById('goblinMascot');
+    if (!mascot || !mascot.classList.contains('patrolling')) return; // cuma bisa dipegang pas lagi kelihatan jalan
+    if (goblinHeld) return;
+
+    e.preventDefault();
+    goblinPressing = true;
+    goblinHeld = false;
+
+    const rect = mascot.getBoundingClientRect();
+    const point = goblinGetPoint(e);
+    goblinPressStart = point;
+    goblinDragOffset.x = point.x - rect.left;
+    goblinDragOffset.y = point.y - rect.top;
+    goblinLastPos = { x: rect.left, y: rect.top };
+
+    if (mascot.setPointerCapture && e.pointerId !== undefined) {
+        try { mascot.setPointerCapture(e.pointerId); } catch (err) {}
+    }
+}
+
+function goblinLiftNow(mascot) {
+    goblinHeld = true;
+    if (goblinAnimId) { cancelAnimationFrame(goblinAnimId); goblinAnimId = null; }
+    mascot.classList.add('held');
+    mascot.style.opacity = '1';
+    goblinPickPhrase();
+    goblinPlayAngrySound();
+}
+
+function goblinPointerMove(e) {
+    if (!goblinPressing) return;
+    const mascot = document.getElementById('goblinMascot');
+    if (!mascot) return;
+
+    const point = goblinGetPoint(e);
+
+    if (!goblinHeld) {
+        const dist = Math.hypot(point.x - goblinPressStart.x, point.y - goblinPressStart.y);
+        if (dist < GOBLIN_LIFT_THRESHOLD) return; // masih dianggap sekadar sentuhan, belum "diangkat"
+        goblinLiftNow(mascot);
+    }
+
+    const x = point.x - goblinDragOffset.x;
+    const y = point.y - goblinDragOffset.y;
+    goblinLastPos = { x, y };
+    mascot.style.transform = `translate(${x}px, ${y}px)`;
+}
+
+function goblinPointerUp() {
+    const mascot = document.getElementById('goblinMascot');
+    const wasHeld = goblinHeld;
+    goblinPressing = false;
+    goblinHeld = false;
+    if (!mascot || !wasHeld) return; // cuma sentuhan biasa (nggak sampai diangkat), biarin dia jalan terus
+
+    // diturunin di posisi itu juga, langsung tenang lagi (bukan hilang)
+    mascot.classList.remove('held');
+    goblinPlayReliefSound();
+
+    // diam sebentar dulu (kayak lega abis diturunin), baru jalan lagi dari situ
+    setTimeout(() => {
+        if (goblinHeld) return; // keburu diangkat lagi
+        goblinResumeFromDrop();
+    }, 900);
+}
+
+function goblinResumeFromDrop() {
+    const mascot = document.getElementById('goblinMascot');
+    if (!mascot || goblinHeld) return;
+
+    const corners = goblinCorners();
+    const dropPoint = { x: goblinLastPos.x, y: goblinLastPos.y };
+
+    // cari pojok terdekat dari posisi diturunin
+    let nearestIdx = 0;
+    let nearestDist = Infinity;
+    corners.forEach((c, i) => {
+        const d = Math.hypot(c.x - dropPoint.x, c.y - dropPoint.y);
+        if (d < nearestDist) { nearestDist = d; nearestIdx = i; }
+    });
+
+    // jalan pelan dulu balik ke jalur pinggir layar, baru lanjut muter seperti biasa
+    const settlePose = (corners[nearestIdx].x >= dropPoint.x) ? 'bottom-right' : 'bottom-left';
+    const settleSegment = { from: dropPoint, to: corners[nearestIdx], pose: settlePose };
+
+    const clockwise = Math.random() < 0.5;
+    const loopSegments = goblinBuildRoute(corners, nearestIdx, clockwise);
+
+    goblinRunSegments([settleSegment, ...loopSegments], { fadeIn: false, fadeOut: true });
+}
+
+function initGoblinInteraction() {
+    const mascot = document.getElementById('goblinMascot');
+    if (!mascot) return;
+    mascot.addEventListener('pointerdown', goblinPointerDown);
+    window.addEventListener('pointermove', goblinPointerMove);
+    window.addEventListener('pointerup', goblinPointerUp);
+    window.addEventListener('pointercancel', goblinPointerUp);
 }
